@@ -1,8 +1,8 @@
 import argparse
 import csv
+import logging
 import sys
 from pathlib import Path
-import logging
 
 
 def check_data(filename):
@@ -22,69 +22,31 @@ def check_data(filename):
     return header, data, missing_rows
 
 
-# step 2
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)-8s %(message)s",
-    datefmt="%H:%M:%S"
-)
-# Create a module-level logger
-logger = logging.getLogger(__name__)
-
 # TODO 1: Create an ArgumentParser
-# Description: "Check the quality of a CSV file."
 parser = argparse.ArgumentParser(
-    description="check quality of csv file"
-)
-
+    description="Check the quality of a CSV file.")
 
 # TODO 2: Add a named argument (required):
-# Long form: --input
-# Short form: -i
-# Help: "CSV file to check"
-parser.add_argument(
-    "--input", "-i",
-    required=True,
-    help="Path to input CSV file"
-)
-
+parser.add_argument("-i", "--input", required=True, help="CSV file to check")
 
 # TODO 3: Add an named argument (optional):
-# Long form: --output
-# Short form: -o
-# Default: "data_quality.txt"
-# Help: "Output report filename"
-parser.add_argument(
-    "--output", "-o",
-    default="data_quality.txt",
-    help="Output reportfile name"
-)
-
+parser.add_argument("-o", "--output", default="data_quality.txt",
+                    help="Output report filename")
 
 # TODO 4: Add a boolean flag:
-# Long form: --verbose
-# Short form: -v
-# Use action="store_true"
-# Help: "Show detailed DEBUG messages"
-parser.add_argument(
-    "--verbose", "-v",
-    action="store_true",
-    help="Print detailed information"
-    # Note 1: verbose has its default value as False
-    # Note 2: action="store_true" sets this to True.
-)
-
+parser.add_argument("-v", "--verbose", action="store_true",
+                    help="Show detailed DEBUG messages")
 
 # TODO 5: Parse the command-line arguments
-
 args = parser.parse_args()
-# step 3
-if args.verbose:
-    logger.setLevel(logging.DEBUG)
 
-logger.debug(f"Arguments parsed: filename={args.input}')")
-
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG if args.verbose else logging.INFO,
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger(__name__)
 
 # Check if the file exists
 p = Path(args.input)
@@ -94,17 +56,9 @@ if not p.is_file():
 
 logger.info(f"File validated: '{args.input}'")
 
-logger.debug(f"Loading data from '{args.input}'")
-
 # Check the data
-# header, data, missing_rows = check_data(args.filename) # args.input
 header, data, missing_rows = check_data(args.input)
-
-logger.info(f"loaded {len(data)} rows")
-
-if len(data) == 0:
-    logger.error("Input file contains no data; cannot continue")
-    sys.exit(1)
+logger.info(f"Loaded {len(data)} rows")
 
 for row_number in missing_rows:
     logger.warning(f"Row {row_number} has missing values")
