@@ -26,7 +26,6 @@ def main():
         default="add",
         help="Operation to perform"
     )
-
     args = parser.parse_args()
 
     if args.operation == "add":
