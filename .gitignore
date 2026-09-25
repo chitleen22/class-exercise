@@ -5,6 +5,7 @@ Thumbs.db
 
 # Data files
 *.csv
+# Ignore all text files except requirements.txt
 *.txt
 !requirements.txt
 data/
