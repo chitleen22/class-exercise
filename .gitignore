@@ -1,0 +1,23 @@
+# OS files
+.DS_Store
+desktop.ini
+Thumbs.db
+
+# Data files
+*.csv
+*.txt
+!requirements.txt
+data/
+
+# Python caches & virtual envs
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE settings & Secrets
+.vscode/
+.idea/
+.env
+
+*.md
